@@ -71,7 +71,70 @@ INNER JOIN address
 ON address.address_id = customer.address_id
 WHERE district = 'California'
 
+
 - you could actually switch customer and address, and it would return the same information
 
 SELECT DISTINCT(TO_CHAR(payment_date, 'MONTH'))
 FROM payment
+
+string functions
+SELECT LOWER(LEFT(first_name,1)) || LOWER(last_name) || '@gmail.com'
+AS custom_email
+FROM customer
+
+SELECT film_id, title
+FROM film
+WHERE film_id IN
+(SELECT inventory.film_id 
+FROM rental
+INNER JOIN inventory ON inventory.inventory_id = rental.inventory_id
+WHERE return_date BETWEEN '2005-05-29' AND '2005-05-30')
+ORDER BY title
+
+-------------------------------------------------
+How can you retrieve the details of facilities with ID 1 and 5? Try to do it without using the OR operator
+SELECT facid FROM cd.facilities
+WHERE facid IN (0,2,5)
+
+How can you produce a list of members who joined after the start of September 2012? Return the memid, surname, firstname, and joindate of the members in question
+____________________________________________________
+-- You'd like to get the signup date of your last member. How can you retrieve this information?
+
+SELECT joindate
+FROM cd.members
+ORDER BY joindate DESC
+LIMIT 1
+
+_____________________________________________________
+
+-- Produce a count of the number of facilities that have a cost to guests of 10 or more.
+
+
+SELECT COUNT(*) FROM cd.facilities
+WHERE guestcost > 10
+
+
+_____________________________________________________
+
+
+-- Produce a list of the total number of slots booked per facility in the month of September 2012. 
+-- Produce an output table consisting of facility id and slots, sorted by the number of slots.
+
+
+SELECT facid, COUNT(*)slots FROM cd.bookings
+WHERE starttime BETWEEN '2012-09-01' AND '2012-10-01'
+GROUP BY facid
+
+
+____________________________________________________
+
+-- Produce a list of the total number of slots booked per facility in the month of September 2012. 
+-- Produce an output table consisting of facility id and slots, sorted by the number of slots.
+
+ 
+SELECT facid, SUM(slots) FROM cd.bookings
+WHERE starttime BETWEEN '2012-09-01' AND '2012-09-30'
+GROUP BY facid
+ORDER BY SUM(slots)
+
+-- SELECT * FROM cd.bookings
