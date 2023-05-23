@@ -138,3 +138,108 @@ GROUP BY facid
 ORDER BY SUM(slots)
 
 -- SELECT * FROM cd.bookings
+
+_____________________________________________________
+
+-- Produce a list of facilities with more than 1000 slots booked. Produce an output table consisting of 
+-- facility id and total slots, sorted by facility id
+
+
+SELECT facid, SUM(slots)  FROM cd.bookings
+GROUP BY facid
+HAVING sum(slots) > 1000
+
+_____________________________________________________
+
+-- How can you produce a list of the start times for bookings for tennis courts, for the date '2012-09-21'?
+-- Return a list of start time and facility name pairings, ordered by the time.
+
+
+SELECT starttime, name FROM cd.bookings
+INNER JOIN cd.facilities
+on cd.bookings.facid = cd.facilities.facid
+WHERE (starttime BETWEEN '2012-09-21 00:00:00'AND'2012-09-21 23:59:59') AND name LIKE 'Tennis Court%'
+ORDER BY starttime
+
+_____________________________________________________
+
+-- How can you produce a list of the start times for bookings by members named 'David Farrell'?
+
+SELECT starttime FROM cd.bookings
+INNER JOIN cd.members
+on cd.bookings.memid = cd.members.memid
+WHERE firstname = 'David' AND surname = 'Farrell'
+
+
+
+
+
+
+AN EXAMPLE OF AN UPDATE JOINUPDATE account_job
+SET hire_date = account.created_on
+FROM account
+WHERE account_job.user_id = account.user_id
+
+Deleting an object
+DELETE FROM job
+WHERE job_name = 'President'
+RETURNING job_id, job_name
+
+
+Creating a table
+CREATE TABLE information(
+	info_id SERIAL PRIMARY KEY,
+	title VARCHAR(500) NOT NULL,
+	person VARCHAR(50) NOT NULL UNIQUE
+)
+RENAME A TABLE
+ALTER TABLE information
+RENAME TO new_info 
+
+Update a column name
+ALTER TABLE new_info
+RENAME COLUMN person TO people
+
+Editing constraints
+ALTER TABLE new_info
+ALTER COLUMN people DROP NOT NULL
+-- would use SET to add a restraint
+
+INSERT INTO employees(
+	first_name,
+	last_name,
+	birthdate,
+	hire_date,
+	salary
+)
+VALUES(
+	'Sammy',
+	'SMith',
+	'1999-11-04',
+	'2010-01-01',
+	50
+)
+
+Creating a table with some checks
+CREATE TABLE employees(
+	emp_id SERIAL PRIMARY KEY,
+	first_name VARCHAR(50) NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+	birthdate DATE CHECK(birthday > '1900-01-01'),
+	hire_date DATE CHECK (hire_date > birthdate)
+)
+
+
+
+
+Case statement EXAMPLE
+SELECT customer_id, 
+CASE
+	WHEN (customer_id <=100) THEN 'Premium'
+	WHEN (customer_id BETWEEN 100 and 200) THEN 'Plus'
+	ELSE 'Normal'
+END AS customer_class
+FROM customer
+
+Case expression EXAMPLE
+
